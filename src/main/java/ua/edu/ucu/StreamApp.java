@@ -1,6 +1,8 @@
 package ua.edu.ucu;
 
-import ua.edu.ucu.stream.*;
+
+import ua.edu.ucu.stream.AsIntStream;
+import ua.edu.ucu.stream.IntStream;
 
 public class StreamApp {
 
@@ -21,7 +23,7 @@ public class StreamApp {
 
     public static String streamForEach(IntStream intStream) {        
         StringBuilder str = new StringBuilder();
-        intStream.forEach(x -> str.append(x));
+        intStream.forEach(str::append);
         return str.toString();
     }
 }

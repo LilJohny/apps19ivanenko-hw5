@@ -156,19 +156,22 @@ public class AsIntStream implements IntStream {
         while (!currentOperations.isEmpty()) {
             switch (currentOperations.get(i)) {
                 case FILTER:
-                    IntPredicate predicate = (IntPredicate) operands.get(0);
+                    IntPredicate predicate = (IntPredicate)
+                            operands.get(0);
                     stream = (AsIntStream) stream.filter(predicate);
                     stream.setOperations(currentOperations);
                     stream.setOperands(currentOperands);
                     break;
                 case MAP:
-                    IntUnaryOperator mapper = (IntUnaryOperator) operands.get(0);
+                    IntUnaryOperator mapper = (IntUnaryOperator)
+                            operands.get(0);
                     stream = (AsIntStream) stream.map(mapper);
                     stream.setOperations(currentOperations);
                     stream.setOperands(currentOperands);
                     break;
                 case FLATMAP:
-                    IntToIntStreamFunction func = (IntToIntStreamFunction) operands.get(0);
+                    IntToIntStreamFunction func = (IntToIntStreamFunction)
+                            operands.get(0);
                     stream = (AsIntStream) stream.flatMap(func);
                     stream.setOperations(currentOperations);
                     stream.setOperands(currentOperands);
