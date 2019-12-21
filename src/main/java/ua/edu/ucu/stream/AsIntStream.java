@@ -20,7 +20,9 @@ public class AsIntStream implements IntStream {
     private long length;
 
     private AsIntStream() {
-        // To Do
+        operations = new ArrayList<>();
+        operands = new ArrayList<>();
+        length = 0;
     }
 
     private AsIntStream(int... values) {
@@ -86,7 +88,7 @@ public class AsIntStream implements IntStream {
             stream = (AsIntStream) stream.executeIntermediate();
         }
         Iterator<Integer> iterator = stream.valueIterable.iterator();
-        return reduce(iterator.next(), Integer::max);
+        return stream.reduce(iterator.next(), Integer::max);
     }
 
     @Override
@@ -97,7 +99,7 @@ public class AsIntStream implements IntStream {
             stream = (AsIntStream) stream.executeIntermediate();
         }
         Iterator<Integer> iterator = stream.valueIterable.iterator();
-        return reduce(iterator.next(), Integer::min);
+        return stream.reduce(iterator.next(), Integer::min);
     }
 
     @Override
