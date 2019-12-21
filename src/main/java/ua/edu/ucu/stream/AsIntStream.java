@@ -1,61 +1,71 @@
 package ua.edu.ucu.stream;
 
-import ua.edu.ucu.function.*;
+import ua.edu.ucu.function.IntToIntStreamFunction;
+import ua.edu.ucu.function.IntUnaryOperator;
+import ua.edu.ucu.function.IntPredicate;
+import ua.edu.ucu.function.IntConsumer;
+import ua.edu.ucu.function.IntBinaryOperator;
 import ua.edu.ucu.iterators.IntIterable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class AsIntStream implements IntStream {
-    private  final String MAP = "map";
-    private  final String FILTER = "filter";
-    private  final String FLATMAP = "flatMap";
+    private final String MAP = "map";
+    private final String FILTER = "filter";
+    private final String FLATMAP = "flatMap";
     private IntIterable valueIterable;
     private ArrayList<String> operations;
     private ArrayList<Object> operands;
     private long length;
+
     private AsIntStream() {
         // To Do
     }
-    private AsIntStream(int ... values) {
+
+    private AsIntStream(int... values) {
         operations = new ArrayList<>();
         operands = new ArrayList<>();
         length = values.length;
         initValues(values);
     }
-    private void initValues(int ... values){
-        Integer [] integerValues = new Integer[values.length];
+
+    private void initValues(int... values) {
+        Integer[] integerValues = new Integer[values.length];
         for (int i = 0; i < integerValues.length; i++) {
             integerValues[i] = Integer.valueOf(values[i]);
         }
         valueIterable = new IntIterable(integerValues);
     }
-    protected void setOperations(ArrayList<String> operationSet){
+
+    protected void setOperations(ArrayList<String> operationSet) {
         operations = operationSet;
     }
 
-    protected void setOperands(ArrayList<Object> operandsSet){
+    protected void setOperands(ArrayList<Object> operandsSet) {
         operands = operandsSet;
     }
+
     public static IntStream of(int... values) {
         return new AsIntStream(values);
     }
 
     private static IntStream of(ArrayList<Integer> arrayList) {
-        int [] array = new int[arrayList.size()];
+        int[] array = new int[arrayList.size()];
         for (int i = 0; i < arrayList.size(); i++) {
             array[i] = arrayList.get(i);
         }
         return AsIntStream.of(array);
     }
-    public static IntStream combined (ArrayList<IntStream> intStreams){
-        ArrayList<Integer> integers  = new ArrayList<>();
-        for (IntStream intStream: intStreams){
-            for(Integer integer: intStream.toArray()){
+
+    public static IntStream combined(ArrayList<IntStream> intStreams) {
+        ArrayList<Integer> integers = new ArrayList<>();
+        for (IntStream intStream : intStreams) {
+            for (Integer integer : intStream.toArray()) {
                 integers.add(integer);
             }
         }
-        return  AsIntStream.of(integers);
+        return AsIntStream.of(integers);
     }
 
     @Override
@@ -65,7 +75,7 @@ public class AsIntStream implements IntStream {
         if (!stream.operands.isEmpty()) {
             stream = (AsIntStream) stream.executeIntermediate();
         }
-        return Double.valueOf(stream.sum())/ (double) stream.length;
+        return Double.valueOf(stream.sum()) / (double) stream.length;
     }
 
     @Override
@@ -109,14 +119,14 @@ public class AsIntStream implements IntStream {
         }
         Integer sum = 0;
         for (Integer integer : stream.valueIterable) {
-            sum+=integer;
+            sum += integer;
         }
         return sum;
     }
 
     @Override
-    public  IntStream filter(IntPredicate predicate) {
-        if (operations.isEmpty() || !operations.get(0).equals(FILTER)){
+    public IntStream filter(IntPredicate predicate) {
+        if (operations.isEmpty() || !operations.get(0).equals(FILTER)) {
             operations.add(FILTER);
             operands.add(predicate);
             return this;
@@ -138,12 +148,12 @@ public class AsIntStream implements IntStream {
         return AsIntStream.of(arrayList);
     }
 
-    private IntStream executeIntermediate(){
+    private IntStream executeIntermediate() {
         AsIntStream stream = this;
         ArrayList<String> currentOperations = this.operations;
         ArrayList<Object> currentOperands = this.operands;
         int i = 0;
-        while (!currentOperations.isEmpty()){
+        while (!currentOperations.isEmpty()) {
             switch (currentOperations.get(i)) {
                 case FILTER:
                     IntPredicate predicate = (IntPredicate) operands.get(0);
@@ -176,14 +186,14 @@ public class AsIntStream implements IntStream {
         if (!stream.operands.isEmpty()) {
             stream = (AsIntStream) stream.executeIntermediate();
         }
-        for (Integer integer:valueIterable){
+        for (Integer integer : valueIterable) {
             action.accept(integer);
         }
     }
 
     @Override
     public IntStream map(IntUnaryOperator mapper) {
-        if(operations.isEmpty() || !operations.get(0).equals(MAP)){
+        if (operations.isEmpty() || !operations.get(0).equals(MAP)) {
             operations.add(MAP);
             operands.add(mapper);
             return this;
@@ -194,9 +204,9 @@ public class AsIntStream implements IntStream {
 
     private IntStream executeMap() {
         IntUnaryOperator mapper = (IntUnaryOperator) operands.get(0);
-        int [] integerValues = new int[(int) length];
+        int[] integerValues = new int[(int) length];
         int index = 0;
-        for (Integer integer : valueIterable){
+        for (Integer integer : valueIterable) {
             integerValues[index] = mapper.apply(integer);
             index++;
         }
@@ -207,7 +217,7 @@ public class AsIntStream implements IntStream {
 
     @Override
     public IntStream flatMap(IntToIntStreamFunction func) {
-        if(operations.isEmpty() || !operations.get(0).equals("flatMap")){
+        if (operations.isEmpty() || !operations.get(0).equals("flatMap")) {
             operations.add(FLATMAP);
             operands.add(func);
             return this;
@@ -219,7 +229,7 @@ public class AsIntStream implements IntStream {
     private IntStream executeFlatMap() {
         IntToIntStreamFunction func = (IntToIntStreamFunction) operands.get(0);
         ArrayList<IntStream> intStreams = new ArrayList<>();
-        for(Integer integer : valueIterable){
+        for (Integer integer : valueIterable) {
             intStreams.add(func.applyAsIntStream(integer));
         }
         operations.remove(0);
@@ -235,7 +245,7 @@ public class AsIntStream implements IntStream {
             stream = (AsIntStream) stream.executeIntermediate();
         }
         int current = identity;
-        for(Integer integer : stream.valueIterable){
+        for (Integer integer : stream.valueIterable) {
             current = op.apply(current, integer);
         }
         return current;
@@ -244,7 +254,7 @@ public class AsIntStream implements IntStream {
     @Override
     public int[] toArray() {
         IntStream stream = executeIntermediate();
-        int [] array = new int [(int) length];
+        int[] array = new int[(int) length];
         int index = 0;
         for (Integer integer : valueIterable) {
             array[index] = integer;
