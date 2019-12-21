@@ -16,19 +16,19 @@ public class StreamApp {
         return res;
     }
 
-    public static int[] streamToArray(IntStream intStream) {        
+    public static int[] streamToArray(IntStream intStream) {
         int[] intArr = intStream.toArray();
         return intArr;
     }
 
-    public static String streamForEach(IntStream intStream) {        
+    public static String streamForEach(IntStream intStream) {
         StringBuilder str = new StringBuilder();
         intStream.forEach(str::append);
         return str.toString();
     }
 
     public static long streamCount(IntStream intStream) {
-        long res = intStream.filter((x)-> x >0).count();
+        long res = intStream.filter((x) -> x > 0).count();
         return res;
     }
 
@@ -36,17 +36,19 @@ public class StreamApp {
         Integer res = intStream.sum();
         return res;
     }
-    public static Integer streamMax(IntStream intStream){
-        Integer res = intStream.filter((x)->x<3).max();
+
+    public static Integer streamMax(IntStream intStream) {
+        Integer res = intStream.filter((x) -> x < 3).max();
         return res;
     }
-    public static Integer streamMin(IntStream intStream){
-        Integer res = intStream.filter((x)->x>=0).min();
+
+    public static Integer streamMin(IntStream intStream) {
+        Integer res = intStream.filter((x) -> x >= 0).min();
         return res;
     }
 
     public static Double streamAverage(IntStream intStream) {
-        Double res = intStream.filter((x)->x>=0).average();
+        Double res = intStream.filter((x) -> x >= 0).average();
         return res;
     }
 }
