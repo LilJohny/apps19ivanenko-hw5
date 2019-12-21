@@ -1,6 +1,7 @@
 package ua.edu.ucu.iterators;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class IntIterator implements java.util.Iterator<Integer> {
     private int index;
@@ -18,8 +19,12 @@ public class IntIterator implements java.util.Iterator<Integer> {
 
     @Override
     public Integer next() {
-        int oldIndex = index;
-        index++;
-        return integerList.get(oldIndex);
+        if (hasNext()) {
+            int oldIndex = index;
+            index++;
+            return integerList.get(oldIndex);
+        } else {
+            throw new NoSuchElementException();
+        }
     }
 }

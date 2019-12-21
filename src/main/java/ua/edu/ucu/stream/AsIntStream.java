@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class AsIntStream implements IntStream {
-    private final String MAP = "map";
-    private final String FILTER = "filter";
-    private final String FLATMAP = "flatMap";
+    private static final String MAP = "map";
+    private static final String FILTER = "filter";
+    private static final String FLATMAP = "flatMap";
     private IntIterable valueIterable;
     private ArrayList<String> operations;
     private ArrayList<Object> operands;
@@ -189,7 +189,7 @@ public class AsIntStream implements IntStream {
         if (!stream.operands.isEmpty()) {
             stream = (AsIntStream) stream.executeIntermediate();
         }
-        for (Integer integer : valueIterable) {
+        for (Integer integer : stream.valueIterable) {
             action.accept(integer);
         }
     }
@@ -256,10 +256,13 @@ public class AsIntStream implements IntStream {
 
     @Override
     public int[] toArray() {
-        IntStream stream = executeIntermediate();
+        AsIntStream stream = this;
+        if (!stream.operands.isEmpty()) {
+            stream = (AsIntStream) stream.executeIntermediate();
+        }
         int[] array = new int[(int) length];
         int index = 0;
-        for (Integer integer : valueIterable) {
+        for (Integer integer : stream.valueIterable) {
             array[index] = integer;
             index++;
         }
